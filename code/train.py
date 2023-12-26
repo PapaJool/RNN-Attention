@@ -29,7 +29,7 @@ dropout = 0.2
 
 torch.manual_seed(1337)
 
-with open('data/input.txt', 'r', encoding='utf-8') as f:
+with open('RNN-Attention/data/input.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 chars = sorted(list(set(text)))

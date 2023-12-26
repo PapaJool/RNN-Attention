@@ -7,7 +7,6 @@ from torch.utils.data import DataLoader
 from time import time
 from datasets import load_dataset
 from model import RNNAttentionLanguageModel, Attention
-from utils import get_batch, estimate_loss
 
 # Загрузка данных
 raw_datasets = load_dataset("abobster/pushkin_new")
@@ -25,6 +24,7 @@ print('device', device)
 eval_iters = 200
 n_embd = 384
 dropout = 0.2
+
 # ------------
 
 torch.manual_seed(1337)
@@ -44,55 +44,32 @@ n = int(0.9 * len(data))
 train_data = data[:n]
 val_data = data[n:]
 
-class Attention(nn.Module):
-    def __init__(self, hidden_size):
-        super(Attention, self).__init__()
-        self.hidden_size = hidden_size
-        self.query = nn.Linear(hidden_size, hidden_size)
-        self.key = nn.Linear(hidden_size, hidden_size)
-        self.value = nn.Linear(hidden_size, hidden_size)
-        self.scale = Parameter(torch.FloatTensor([1.0 / (hidden_size ** 0.5)]))
+def get_batch(split):
+    data = train_data if split == 'train' else val_data
+    ix = torch.randint(len(data) - block_size, (batch_size,))
+    x = torch.stack([data[i:i + block_size] for i in ix])
+    y = torch.stack([data[i + 1:i + block_size + 1] for i in ix])
+    x, y = x.to(device), y.to(device)
+    return x, y
 
-    def forward(self, query, key, value):
-        scores = torch.matmul(query, key.transpose(-2, -1))
-        scores = scores * self.scale
-        attention_weights = F.softmax(scores, dim=-1)
-        context = torch.matmul(attention_weights, value)
-        return context, attention_weights
-
-class RNNAttentionLanguageModel(nn.Module):
-    def __init__(self):
-        super(RNNAttentionLanguageModel, self).__init__()
-        self.embedding = nn.Embedding(vocab_size, n_embd)
-        self.rnn = nn.LSTM(n_embd, n_embd, num_layers=1, dropout=dropout, batch_first=True)
-        self.attention = Attention(n_embd)
-        self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(n_embd, vocab_size)
-
-    def forward(self, x, hidden=None):
-        embedded = self.embedding(x)
-        output, hidden = self.rnn(embedded, hidden)
-        context, _ = self.attention(output, output, output)
-        output = self.dropout(context)
-        logits = self.fc(output)
-        return logits, hidden
-
-    def generate(self, start_tokens, max_new_tokens, temperature=1.0):
-        model.eval()
-        generated_tokens = start_tokens.clone()
-
-        for _ in range(max_new_tokens):
-            logits, _ = model(generated_tokens)
-            last_logits = logits[:, -1, :] / temperature
-            probabilities = F.softmax(last_logits, dim=-1)
-            sampled_token = torch.multinomial(probabilities, 1)
-            generated_tokens = torch.cat((generated_tokens, sampled_token), dim=1)
-
-        return generated_tokens
+@torch.no_grad()
+def estimate_loss():
+    out = {}
+    model.eval()
+    for split in ['train', 'val']:
+        losses = torch.zeros(eval_iters)
+        for k in range(eval_iters):
+            X, Y = get_batch(split)
+            logits, _ = model(X)
+            loss = F.cross_entropy(logits.view(-1, vocab_size), Y.view(-1))
+            losses[k] = loss.item()
+        out[split] = losses.mean()
+    model.train()
+    return out
 
 model = RNNAttentionLanguageModel()
-m = model.to(device)
-print(sum(p.numel() for p in m.parameters()) / 1e6, 'M parameters')
+model.to(device)
+print(sum(p.numel() for p in model.parameters()) / 1e6, 'M parameters')
 
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 

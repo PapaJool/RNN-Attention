@@ -7,7 +7,7 @@ This repository contains code for training a Recurrent Neural Network (RNN) with
 ### Long Short-Term Memory (LSTM)
 
 The core of the model is a Long Short-Term Memory (LSTM) layer, a type of recurrent neural network designed to capture long-term dependencies. It consists of a cell state, input gate, forget gate, and output gate.
-![LSTM](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Mb_L_slY9rjMr8-IADHvwg.png)
+![LSTM](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/LSTM_Cell.svg/2560px-LSTM_Cell.svg.png)
 
 #### The LSTM unit processes input sequences as follows:
 

@@ -29,7 +29,7 @@ where:
 - V represents the value matrix,
 - sqrt(d_k) is a scaling factor
 
-<img src="https://sun9-71.userapi.com/impf/ZW8EEUxswgqtzxIfY8nQH5M7uOKpeJJT0L3dKw/9AMxCWN2_b4.jpg?size=860x1113&quality=96&sign=d9f40c56ed9773267c7f129149c08a0a&type=album" width="50%" height="50$">
+![Attention](https://sun9-71.userapi.com/impf/ZW8EEUxswgqtzxIfY8nQH5M7uOKpeJJT0L3dKw/9AMxCWN2_b4.jpg?size=860x1113&quality=96&sign=d9f40c56ed9773267c7f129149c08a0a&type=album)
 
 ### Training
 

@@ -31,19 +31,6 @@ where:
 
 ![Attention](https://sun9-71.userapi.com/impf/ZW8EEUxswgqtzxIfY8nQH5M7uOKpeJJT0L3dKw/9AMxCWN2_b4.jpg?size=860x1113&quality=96&sign=d9f40c56ed9773267c7f129149c08a0a&type=album)
 
-
-
-
-
-
-
-
-
-
-
-
-<img src="https://sun9-71.userapi.com/impf/ZW8EEUxswgqtzxIfY8nQH5M7uOKpeJJT0L3dKw/9AMxCWN2_b4.jpg?size=860x1113&quality=96&sign=d9f40c56ed9773267c7f129149c08a0a&type=album">
-
 ### Training
 
 The model is trained using the AdamW optimizer with a learning rate of `learning_rate`. Training is performed for a maximum of `max_iters` iterations, and the loss is evaluated on both the training and validation sets at regular intervals (`eval_interval`).

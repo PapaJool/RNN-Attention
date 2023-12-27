@@ -7,18 +7,29 @@ This repository contains code for training a Recurrent Neural Network (RNN) with
 ### Long Short-Term Memory (LSTM)
 
 The core of the model is a Long Short-Term Memory (LSTM) layer, a type of recurrent neural network designed to capture long-term dependencies. It consists of a cell state, input gate, forget gate, and output gate.
+![LSTM](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Mb_L_slY9rjMr8-IADHvwg.png)
+
+#### The LSTM unit processes input sequences as follows:
+
+1. **Input Processing**: Input features are multiplied by weights in the input gate to determine which information to store in the cell state.
+
+2. **Forget Gate**: The forget gate decides which information from the previous cell state should be discarded.
+
+3. **Cell State Update**: The cell state is updated by combining the information from the input gate and the retained information from the previous cell state.
+
+4. **Output Gate**: The output gate decides what information from the cell state should be the output of the LSTM unit.
 
 ### Attention Mechanism
 
 The attention mechanism is integrated into the model using the scaled dot-product attention formula:
-
-\[ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V \]
-
+$$[ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V ]$$
 where:
-- \(Q\) represents the query matrix,
-- \(K\) represents the key matrix,
-- \(V\) represents the value matrix,
-- \(\sqrt{d_k}\) is a scaling factor
+- Q represents the query matrix,
+- K represents the key matrix,
+- V represents the value matrix,
+- sqrt(d_k) is a scaling factor
+
+<img src="https://sun9-71.userapi.com/impf/ZW8EEUxswgqtzxIfY8nQH5M7uOKpeJJT0L3dKw/9AMxCWN2_b4.jpg?size=860x1113&quality=96&sign=d9f40c56ed9773267c7f129149c08a0a&type=album" width="50%" height="50$">
 
 ### Training
 
@@ -51,7 +62,6 @@ The trained model can generate new text by providing a seed sequence (`start_tok
 4. **Text Generation**: Use the trained model to generate new text by providing a seed sequence.
 
 ## Dependencies
-
 - Python 3.7 or later
 - PyTorch
 - Hugging Face `datasets` library

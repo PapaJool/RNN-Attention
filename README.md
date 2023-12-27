@@ -1,45 +1,61 @@
-# RNN Attention Language Model
+# RNN with Attention Language Model
 
-This repository contains the implementation of an RNN attention-based language model trained on Pushkin's texts. The model is designed to generate text character by character, and it uses an attention mechanism to capture context dependencies within the input sequence.
+This repository contains code for training a Recurrent Neural Network (RNN) with an attention mechanism to generate text. The model is designed to learn from the poetry dataset provided by abobster/pushkin_new. The model is implemented using PyTorch.
 
-## Model Overview
+## Model Architecture
 
-The language model is built using PyTorch and consists of the following components:
+### Long Short-Term Memory (LSTM)
 
-- **RNN (Recurrent Neural Network):** A recurrent layer processes the input sequence, capturing sequential dependencies in the data.
-  
-- **Attention Mechanism:** An attention mechanism allows the model to focus on different parts of the input sequence during processing. This helps the model learn long-range dependencies.
+The core of the model is a Long Short-Term Memory (LSTM) layer, a type of recurrent neural network designed to capture long-term dependencies. It consists of a cell state, input gate, forget gate, and output gate.
 
-- **Softmax Layer:** The final layer applies softmax to the output, generating a probability distribution over the vocabulary for each time step.
+### Attention Mechanism
 
-## Training
+The attention mechanism is integrated into the model using the scaled dot-product attention formula:
 
-The model is trained using the provided training script (`train.py`). During training, the model minimizes the cross-entropy loss between predicted and actual characters. Training is performed using the AdamW optimizer, and the process can be monitored for both training and validation losses.
+\[ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V \]
 
-To train the model, follow these steps:
+where:
+- \(Q\) represents the query matrix,
+- \(K\) represents the key matrix,
+- \(V\) represents the value matrix,
+- \(\sqrt{d_k}\) is a scaling factor
 
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run the training script: `python code/train.py`
+### Training
 
-## Text Generation
+The model is trained using the AdamW optimizer with a learning rate of `learning_rate`. Training is performed for a maximum of `max_iters` iterations, and the loss is evaluated on both the training and validation sets at regular intervals (`eval_interval`).
 
-After training, the model can be used to generate new text using the provided generation script (`generate.py`). The user can specify the temperature parameter, controlling the randomness of the generated text. Higher temperatures lead to more diverse output, while lower temperatures make the output more deterministic.
+### Batch Generation
 
-To generate text, run the following:
+Training data is divided into batches of size `batch_size`. For each batch, a random starting index is chosen, and subsequences of length `block_size` are extracted for both input and target sequences.
 
-```bash
-python code/generate.py --temperature 0.8 --max_tokens 500
-Adjust the temperature and max_tokens as needed.
+### Generation of New Text
 
-Project Structure
+The trained model can generate new text by providing a seed sequence (`start_tokens`). The `generate` method samples new tokens from the model's output logits, allowing for creative and diverse text generation.
 
-code: Contains Python scripts for training and generating text.
-data: Stores input data, such as the text dataset.
-checkpoints: Can store pre-trained model weights or other important model components.
-docs: Documentation folder (optional).
-README.md: Overview of the project and instructions for usage.
-requirements.txt: List of dependencies.
-.gitignore: Specifies files and directories to be ignored by Git.
-Acknowledgments
+## Model Parameters
 
-The model was trained on the Pushkin dataset from Hugging Face Datasets.
+- `n_embd`: Number of hidden units in the LSTM and attention mechanism.
+- `dropout`: Dropout rate applied to the LSTM output.
+- `batch_size`: Size of training batches.
+- `block_size`: Length of subsequences used for training.
+- `learning_rate`: Learning rate for the AdamW optimizer.
+
+## Usage
+
+1. **Dataset Loading**: Load the dataset using the `load_dataset` function from the `datasets` library. Save the training text to 'input.txt'.
+
+2. **Model Initialization**: Create an instance of the `RNNAttentionLanguageModel` class, and print its parameters to the console.
+
+3. **Training Loop**: Train the model using the specified hyperparameters. Training loss and validation loss are printed at regular intervals.
+
+4. **Text Generation**: Use the trained model to generate new text by providing a seed sequence.
+
+## Dependencies
+
+- Python 3.7 or later
+- PyTorch
+- Hugging Face `datasets` library
+
+## Acknowledgments
+
+The model architecture and training loop are inspired by the works on recurrent neural networks and attention mechanisms in natural language processing. Special thanks to the authors of abobster/pushkin_new dataset.
